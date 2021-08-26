@@ -11,3 +11,19 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* TEST PANNEL */
+
+.testPannel{
+  width: fit-content;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  padding: 20px;
+  opacity: 0.6;
+  display: flex;
+  flex-direction: column;
+}
+.testPannel .toggleButton{
+  float: right;
+}

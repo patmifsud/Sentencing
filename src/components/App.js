@@ -5,14 +5,16 @@ import { db, auth } from "../services/firebase.js"
 
 // takes care of routing and auth
 
+
 function App() {
-  const urlParam = window.location.pathname.split("/").pop();
+  const urlParams = window.location.pathname.split("/").pop();
 
   return (
     <div className="App">
-      {urlParam}
-      <Game />
-      <LandingPage />
+      { urlParams ?
+        <Game urlParams={urlParams}/>  :
+        <LandingPage />
+      }
     </div>
   );
 }
