@@ -1,8 +1,10 @@
+
+// only shown in dev environment
+
 import React, { useState } from "react"
 
 // players, playerId, round, story, tempSentences, wonSentence, gameId
 // dbSetPlayerReady, dbSetAllPlayersReady, dbSetGamePhase, checkAllPlayersReady
-
 
 function TestPannel(props) {
    const [pannelClosed, setPannelClosed] = useState(true);

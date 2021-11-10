@@ -1,7 +1,7 @@
 
-// Game component
+// Game 
 // takes care of swapping out game phase components
-// and managing the states of the game
+// and managing the states of the game (phases)
 
 import React, { useState, useEffect } from "react"
 import {db, startFBSnapshots} from "../services/firebase.js"
@@ -9,8 +9,8 @@ import {db, startFBSnapshots} from "../services/firebase.js"
 import TestPannel from "./TestPannel"
 
 import {
-   Loading,Lobby,RoundStart,Intro,Write,Vote,Reveal,Scoreboard,End
- } from "./gamePhases/allPhases";
+   Loading,Lobby,Intro,RoundStart,Write,Vote,Reveal,Scoreboard,End
+ } from "./gamePhases/gamePhaseIndex";
 
 
 function Game(props) {
@@ -26,6 +26,7 @@ function Game(props) {
 
    const gameId = props.urlParams.toString()
 
+   // Placing all states in an obj for easier pass through to components
    let gameStates = {
       players, playerId, round, story, tempSentences, wonSentence, gameId, currentPhase
    }
@@ -110,9 +111,9 @@ function Game(props) {
          dbSetAllPlayersReady(false);
    }}
   
-
-   // Everytime player data changes, check if all players ready
-   // If they are, and user is host, set db game phase to next phase
+   // ----------------
+   // Everytime player data state changes, check if all players ready
+   // If they are, and user is host, set 'currentPhase' in db to the next phase
    useEffect(() => { 
       phaseHandler();
    }, [players]);
