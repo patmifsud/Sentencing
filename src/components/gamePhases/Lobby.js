@@ -6,6 +6,7 @@ function Lobby() {
    return (
       <div className="lobby phase">
         <h3>Lobby</h3>
+        
       </div>
       );
     }

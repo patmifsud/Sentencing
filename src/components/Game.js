@@ -4,16 +4,20 @@
 // and managing the states of the game (phases)
 
 import React, { useState, useEffect } from "react"
+import { motion } from 'framer-motion'
+
+import gmService from "../services/gmService.js"
 import {db, startFBSnapshots} from "../services/firebase.js"
 
-import TestPannel from "./TestPannel"
-
+import TestPannel from "./ui/TestPannel"
+import PlayerDrawer from "./ui/playerDrawer/PlayerDrawer"
 import {
-   Loading,Lobby,Intro,RoundStart,Write,Vote,Reveal,Scoreboard,End
- } from "./gamePhases/gamePhaseIndex";
-
+   Loading, Lobby, Intro, RoundStart, Write, Vote, Reveal, Scoreboard, End
+   } from "./gamePhases/gamePhaseIndex";
 
 function Game(props) {
+   const gameId = props.urlParams.toString()
+
    const [currentPhase, setCurrentPhase] = useState('Loading');
    const [players, setPlayers] = useState([]);
    const [playerId, setPlayerId] = useState(0)
@@ -24,10 +28,7 @@ function Game(props) {
    const [tempSentences, setTempSentences] = useState([]);
    const [wonSentence, setWonSentence] = useState([]);
 
-   const gameId = props.urlParams.toString()
-
-   // Placing all states in an obj for easier pass through to components
-   let gameStates = {
+   let states = {
       players, playerId, round, story, tempSentences, wonSentence, gameId, currentPhase
    }
 
@@ -49,7 +50,6 @@ function Game(props) {
    // ------------------------
    // 🔥 Start Firebase snapshots
    useEffect(() => {
-
       startFBSnapshots(
          setCurrentPhase, 
          setWonSentence,
@@ -63,54 +63,20 @@ function Game(props) {
       // https://firebase.google.com/docs/firestore/query-data/listen#detach_a_listener
    }, []);
 
-
-   // ------------------------
-   // Manage game phases
-
-   function dbSetPlayerReady(playerId, bool){
-      const playerIdStr = String(playerId)
-      db.collection("games").doc(gameId).collection("players")
-      .doc(playerIdStr).update({ ready: bool });
-   }
-
-   function dbSetAllPlayersReady(bool) {
-      for (let i = 0; i < players.length; i++) {
-         db.collection("games").doc(gameId).collection("players")
-         .doc(String(i)).update({ ready: bool });
-      }
-   }
-
-   function dbSetGamePhase(newPhase){
-      db.collection("games").doc(gameId)
-      .update({ currentPhase: newPhase });
-   }
-
-   function checkAllPlayersReady(bool) {
-      for (let i = 0; i < players.length; i++) {
-        if (players[i].ready !== bool) return false};
-      return true;
-   }
-
-   function checkIfEndGame(){
-      if (currentPhase === "Scoreboard" && 
-         round >= gameLength) {
-            return true
-      } return false
-   }
-
    function phaseHandler() {
-      if (players.length > 0 && 
-          players[playerId].isHost && 
-          checkAllPlayersReady(true)){
-            if (checkIfEndGame()) {
-               dbSetGamePhase("End")} 
+      if (
+         players.length > 0 && 
+         players[playerId].isHost && 
+         gmService.checkAllPlayersReady(states, true)){
+            if (gmService.checkIfEndGame(states, gameLength)) {
+               gmService.dbSetGamePhase(states, "End")} 
             else {
                const nextPhase = gamePhases[currentPhase].nextPhase
-               dbSetGamePhase(nextPhase)}
-
-         dbSetAllPlayersReady(false);
-   }}
-  
+               gmService.dbSetGamePhase(states, nextPhase)
+            }
+            gmService.dbSetAllPlayersReady(states, false);
+      }
+   }
    // ----------------
    // Everytime player data state changes, check if all players ready
    // If they are, and user is host, set 'currentPhase' in db to the next phase
@@ -118,23 +84,20 @@ function Game(props) {
       phaseHandler();
    }, [players]);
 
-
   return (
-    <div>
+    <div className="game-container">
+      <PlayerDrawer data={states}/>
+
       {React.createElement(
          gamePhases[currentPhase].obj, { 
-            data: gameStates, 
-            action: {dbSetPlayerReady}
+            data: states, 
+            
          },
       )}
 
       {/* Test pannel, only visible on local */}
       {process.env.NODE_ENV === 'development' ? 
-         <TestPannel data={gameStates} 
-            dbSetPlayerReady={dbSetPlayerReady} 
-            dbSetAllPlayersReady={dbSetAllPlayersReady}
-            dbSetGamePhase={dbSetGamePhase}
-          /> 
+         <TestPannel data={states}/> 
          : ' '
       }
    </div>

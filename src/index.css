@@ -1,39 +1,8 @@
 /* BOILERPLATE */
 *{box-sizing:border-box; margin:0; padding:0; border:0; outline:0; font-size:100%; vertical-align:baseline; background:transparent;}
 body, html{ min-height: 100vh;  background: var(--bgCol); }
+/* 
 
-/* base unit for rem */
-html{ font-size:calc(5px + 1vw + 1vh); }
-
-/* VARS */
-
-  :root {
-    /* spacers */
-    --sp0:0.3rem;
-    --sp1:0.5rem;
-    --sp2:1.2rem;
-    --sp3:1.8rem;
-    --sp4:2.5rem;
-    --sp5:3.0rem;
-    --sp6:3.5rem;
-    --sp7:5.5rem;
-    --sp8:7.0rem;
-    --sp9:9.0rem;
-    --sp10:12.0rem;
-
-    /* font size */
-    --txtSize1: 3rem;
-    --txtSize2: 2rem;
-    --txtSize3: 1.8rem;
-    --txtSize4: 1.6rem;
-    --txtSize5: 1.3rem;
-
-    /* interface colors */
-    --mainCol: var(--purple1);
-    --bgCol: rgb(0, 0, 0);
-    --bgCol2: var(--blue3);
-    
-}
 
 
 
@@ -45,9 +14,6 @@ svg.logo{
   width: var(--sp8);
   height: var(--sp3);
 }
-
-
-
 
 /* TEST PANNEL */
 
