@@ -2,14 +2,13 @@
 // only shown in dev environment
 
 import React, { useState } from "react"
-import gmService from "../../services/gmService.js"
+import gmService from "../../services/gameService.js"
 
-// players, playerId, round, story, tempSentences, wonSentence, gameId
+// players, playerNo, round, story, tempSentences, wonSentence, gameId
 // dbSetPlayerReady, dbSetAllPlayersReady, dbSetGamePhase, checkAllPlayersReady
 
 function TestPannel(props) {
    const [pannelClosed, setPannelClosed] = useState(true);
-   console.log(props.data)
 
    return (
       <div className="testPannel">
@@ -18,15 +17,17 @@ function TestPannel(props) {
          :
             <>
                <p> <b>Game id</b> is <br/>{props.data.gameId}</p>
-               <p> <b>Player id</b> is <br/>{props.data.playerId}</p>
+               <p> <b>Player id</b> is <br/>{props.data.playerNo}</p>
                <p> <b>Current phase:</b> <br/>{props.data.currentPhase}</p>
                {/* <p> <b>Round:</b>  /  </p> */}
                <br/>
                <p> <b>Console log:</b> </p>
                <button onClick={() => {console.log(props.data.story)}} > Story </button>
-               <button onClick={() => {console.log(props.data.tempSentences)}} > tempSentences</button>
+               <button onClick={() => {console.log(props.data.sentenceCache)}} > sentenceCache</button>
                <button onClick={() => {console.log(props.data.wonSentence)}} > wonSentence</button>
-               <button onClick={() => {console.log(props.data.story)}} > All player data </button>
+               <button onClick={() => {console.log(props.data.players)}} > All player data </button>
+               <button onClick={() => {console.log(props.data.player)}} > player</button>
+
                <br />
                <p> <b>Actions:</b> </p>
 
@@ -52,6 +53,39 @@ function TestPannel(props) {
                      'Intro'
                   )}} > 
                   Back to Intro 
+               </button>
+
+               <button onClick={() => {
+                  gmService.dbSetGamePhase(
+                     props.data, 
+                     'Lobby'
+                  )}} > 
+                  Back to Lobby 
+               </button>
+
+               <button onClick={() => {
+                  gmService.dbAddTempStory(
+                     props.data,
+                     [{
+                        text: 'Once upon a time',
+                        playerNo: 0,
+                        playerName: 'fakeplayername'
+                     },
+                     {
+                        text: 'there was a text story',
+                        playerNo: 1,
+                        playerName: 'fakeplayername'
+
+                     },
+                     {
+                        test: 'and then there was a test story',
+                        playerNo: 0,
+                        playerName: 'fakeplayername'
+
+                     }
+                     ])
+               }} 
+               > generate temp story 
                </button>
 
             </>

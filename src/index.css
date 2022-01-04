@@ -1,19 +1,51 @@
 /* BOILERPLATE */
-*{box-sizing:border-box; margin:0; padding:0; border:0; outline:0; font-size:100%; vertical-align:baseline; background:transparent;}
-body, html{ min-height: 100vh;  background: var(--bgCol); }
-/* 
 
+/* *{box-sizing:border-box; margin:0; padding:0; border:0; outline:0; font-size:100%; vertical-align:baseline; background:transparent; font-family: 'Sarabun', sans-serif;} */
+/* body, html{ min-height: 100vh;  background: var(--bgCol); } */
 
+/* base unit for rem */
+/* html{ font-size:calc(5px + 1vw + 1vh); } */
 
+/* VARS */
 
+  :root {
+    /* spacers */
+    --sp0:0.3rem;
+    --sp1:0.5rem;
+    --sp2:1.2rem;
+    --sp3:1.8rem;
+    --sp4:2.5rem;
+    --sp5:3.0rem;
+    --sp6:3.5rem;
+    --sp7:5.5rem;
+    --sp8:7.0rem;
+    --sp9:9.0rem;
+    --sp10:12.0rem;
 
-/* COMPONENTS */
+    /* font size */
+    --txtSize1: 3rem;
+    --txtSize2: 2rem;
+    --txtSize3: 1.8rem;
+    --txtSize4: 1.4rem;
+    --txtSize5: 1rem;
 
+    /* interface colors */
+    --mainCol: var(--purple1);
+    --bgCol: #18181B;
 
-svg.logo{
-  width: var(--sp8);
-  height: var(--sp3);
+    --grey1: #1F1F23;
+    --grey2: #292929;
+    --grey3: #333333;
+    --grey4: #A3A3A3;
+
+    --color1: #FF704D;
+    --color2: #FFD81A;
+    --color3: #CB55D4;
+    --color4: #1868FB;
+    --color5: #A3A3A3;
+    
 }
+
 
 /* TEST PANNEL */
 
@@ -26,12 +58,110 @@ svg.logo{
   opacity: 0.6;
   display: flex;
   flex-direction: column;
-  background: white;
-  font-family: helvetica;
+  background: #18181B;
 }
 .testPannel .toggleButton{
   float: right;
 }
 
-/* create css variables for spacing */
-      
+.chakra-icon{
+  margin-top: -2px;
+  margin-right: 5px;
+}
+
+
+/* landing page */
+.landingPage{
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: stretch;
+  height: 100vh;
+  text-align: center;
+}
+
+.landingPage .left{
+  display: flex;
+  width: 50vw;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 5vh 30px 10vh 30px;
+
+}
+
+.landingPage .right{
+  width: 50vw;
+  background-color: white;
+  background-image: url("/src/assets/bg1.gif");
+  flex-grow:1;
+  background-position: center 35%;
+  background-repeat: no-repeat;
+  background-size: 80%;
+}
+
+.landingPage .credit{
+  color: #292929b9;
+    position: absolute;
+    width: 50vw;
+    bottom: 30px;
+}
+
+.landingPage .logo{
+  max-width: 35vw;
+  margin: 0 auto;
+}
+
+
+/* vote */
+.vote-Sentence{
+  display: flex;
+  align-items: center;
+}
+
+/* speech bubble */
+.bubble {
+  position: relative;
+	background-color: #fff;
+	padding: 1.125em 1.5em; ;
+  color: #292929;
+  margin-bottom:15px;
+  width: fit-content;
+  margin-left: 20px;
+
+}
+
+.bubble::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  bottom: 40%;
+  left: -16px;
+  border: 0.75rem solid transparent;
+  border-top: none;
+  border-bottom-color: #fff;
+  transform: rotate(271deg);
+
+}
+
+
+.disable{
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+
+
+@media screen and (max-width: 800px) {
+  .landingPage{
+    flex-direction: column;
+  }
+  .landingPage .left{
+    width: 100vw;
+    min-height: fit-content;
+  }
+  .landingPage .right{
+    width: 100vw;
+  }
+}

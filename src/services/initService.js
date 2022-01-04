@@ -1,58 +1,36 @@
 import firebase from "firebase";
-import {db} from "./firebase.js"
+import { db } from "./firebase.js";
+import Player from '../models/player.js';
+import playerService from './playerService.js';
 
-async function createNewGame(
-  gameCode, 
-  setStartingGame, 
-  setGameCodeError) {
-    console.log("creating new game");
-    console.log(gameCode);
-    await db
-      .collection("games")
-      .doc(gameCode)
-      //----------------------
-      // create a new game
-      .set({
-        players: [],
-        sentences: [],
-        story: [],
-        roundCounter: 1,
-        currentPhase: "Lobby",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      })
-      //----------------------
-      // create a new user
-      .then(function () {
-        db.collection("games")
-          .doc(gameCode)
-          .collection("players")
-          .doc("0")
-          .set({
-            name: "hey",
-            score: 0,
-            isArbitrator: true,
-            ready: false,
-            isHost: true,
-            id: 123,
-            position: 0,
-          })
-          //----------------------
-          // Navigate to the game
-          .then(function () {
-            console.log(`Game ${gameCode} created`);
-            setTimeout(function () {
-              
-              window.location.href = `${gameCode}`;
-            }, 500);
-          });
-      })
-      .catch(function (error) {
-        console.error("Error writing document: ", error);
-        setStartingGame(false);
-        setGameCodeError(true);
+
+async function createNewGame(gameCode, setStartingGame, setGameCodeError) {
+  const dbPath = db.collection("games").doc(gameCode)
+  const randomId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+  
+  await dbPath.set({ // create a new game
+      story: [],
+      roundCounter: 1,
+      currentPhase: "Lobby",
+      wonSentence: [],
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    })
+    .then(function () { // create a new user
+      const localId = localStorage.getItem("localId") || randomId;
+      const player = new Player(null, 0, true, false, localId, false, 0, "editor");
+      const onSuccess = () => { 
+        window.location.href = gameCode;
       }
-    );
+      playerService.mintNewPlayer(
+        gameCode, player, onSuccess, 0
+      )
+    })
+    .catch(function (error) {
+      console.error("Error writing document: ", error);
+      setStartingGame(false);
+      setGameCodeError(true);
+      // show error to user
+    });
 }
 
 export { createNewGame };
-

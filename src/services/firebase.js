@@ -20,7 +20,7 @@ const db = firebaseApp.firestore();
 
 // 📅  update 'currentPhase' and 'wonSentence'
 // in game state when 'phase' changes in db
-function startGameFieldsSnapshot(setCurrentPhase, setWonSentence, gameId) {
+function startGameFieldsSnapshot(setCurrentPhase, setWonSentence, setStory, gameId) {
   console.log("Started startGameFieldsSnapshot");
   db.collection("games")
     .doc(gameId)
@@ -28,6 +28,7 @@ function startGameFieldsSnapshot(setCurrentPhase, setWonSentence, gameId) {
       (snapshot) => {
         setCurrentPhase(snapshot.data().currentPhase);
         setWonSentence(snapshot.data().wonSentence);
+        setStory(snapshot.data().story);
       },
       (error) => {
         console.error("startGameFieldsSnapshot failed: ", error);
@@ -57,34 +58,35 @@ function startPlayersSnapshot(setPlayers, gameId) {
     );
 }
 
-// 📖 update 'story' in game state when 'story' changes in db
-function startStorySnapshot(setStory, gameId) {
-  console.log("Started startStorySnapshot");
-  db.collection("games")
-    .doc(gameId)
-    .collection("story")
-    .onSnapshot(
-      function (querySnapshot) {
-        let allStories = [];
-        if (querySnapshot.docs.length > 0) {
-          querySnapshot.docs.forEach((doc) => {
-            allStories.push(doc.data());
-          });
-          setStory(allStories);
-        } else console.log("No stories yet");
-      },
-      (error) => {
-        console.error("startStorySnapshot failed: ", error);
-      }
-    );
-}
+// story is an array field, not a collection in FB, so commenting this out for now
+// // 📖 update 'story' in game state when 'story' changes in db
+// function startStorySnapshot(setStory, gameId) {
+//   console.log("Started StorySnapshot");
+//   db.collection("games")
+//     .doc(gameId)
+//     .collection("story")
+//     .onSnapshot(
+//       function (querySnapshot) {
+//         let allStories = [];
+//         if (querySnapshot.docs.length > 0) {
+//           querySnapshot.docs.forEach((doc) => {
+//             allStories.push(doc.data());
+//           });
+//           setStory(allStories);
+//         } else console.log("No stories yet");
+//       },
+//       (error) => {
+//         console.error("startStorySnapshot failed: ", error);
+//       }
+//     );
+// }
 
-// 💬 update 'sentence' in game state when 'story' changes in db
-function startSentencesSnapshot(setTempSentences, gameId) {
-  console.log("Started startSentencesSnapshot");
+// 💬 update 'sentence cache' in game state when 'sentence cache' changes in db
+function startSentenceCacheSnapshot(setSentenceCache, gameId) {
+  console.log("Started startSentenceCacheSnapshot");
   db.collection("games")
     .doc(gameId)
-    .collection("sentences")
+    .collection("sentenceCache")
     .onSnapshot(
       function (querySnapshot) {
         let allSentences = [];
@@ -92,14 +94,15 @@ function startSentencesSnapshot(setTempSentences, gameId) {
           querySnapshot.docs.forEach((doc) => {
             allSentences.push(doc.data());
           });
-          setTempSentences(allSentences);
+          setSentenceCache(allSentences);
         }
       },
       (error) => {
-        console.error("startSentencesSnapshot failed: ", error);
+        console.error("startSentenceCacheSnapshot failed: ", error);
       }
     );
 }
+
 
 // collecting all functions in one parent function
 // for less verbose passthrough
@@ -112,10 +115,10 @@ function startFBSnapshots(
   setTempSentences,
   gameId
 ) {
-  startGameFieldsSnapshot(setCurrentPhase, setWonSentence, gameId);
+  startGameFieldsSnapshot(setCurrentPhase, setWonSentence, setStory, gameId);
   startPlayersSnapshot(setPlayerId, gameId);
-  startStorySnapshot(setStory, gameId);
-  startSentencesSnapshot(setTempSentences, gameId);
+  // startStorySnapshot(setStory, gameId);
+  startSentenceCacheSnapshot(setTempSentences, gameId);
 }
 
 export { db, auth, startFBSnapshots};

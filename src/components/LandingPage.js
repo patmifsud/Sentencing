@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { createNewGame } from "../services/initService.js"
-import { motion } from "framer-motion"
+import logoLockuo from '../assets/logo-lockup.svg'
+import { FormLabel, Button, Text, PinInput, PinInputField, HStack } from "@chakra-ui/react";
 
-import LoadingButton from "@mui/lab/LoadingButton";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Snackbar from "@mui/material/Snackbar";
+import { motion } from "framer-motion"
 
 
 // takes care of routing and auth stuff
@@ -37,58 +35,64 @@ function LandingPage() {
     );
   }
 
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setGameCodeError(false);
-  };
-
   useEffect(() => {
     setStartingGame(false);
   }, []);
 
   return (
     <main className="landingPage">
-      <section className="start">
+      <section className="left">
         <div>
-          <h1>Sentencing</h1>
-          <h4>Make terrible stories with your friends, and robots</h4>
-          <p>(1-8 players, ~10minutes)</p>
+          <img className="logo" title="Sentencing" src={logoLockuo} />
+          <Text fontSize='xs' mt='4' mb='5' fontWeight='500' opacity='0.4'>[ 1-8 players | ~10minutes ]</Text>
         </div>
+        
         <div>
-          <LoadingButton
+          <Button 
+            bg='#FFAE1B'
+            colorScheme='orange'
+            isLoading={startingGame}
+            my="4" 
             onClick={_startButtonHandler}
-            loading={startingGame}
-            loadingPosition="center"
-            variant="contained"
           >
             Start a game
-          </LoadingButton>
+          </Button>
+          
+          <Text fontSize='xs' my='3' fontWeight='500' opacity='0.4'> or</Text>
 
-          <p>or</p>
-          <form onSubmit={_joinButtonHandler}>
-            <TextField
-              id="filled"
-              label="Game Code:"
-              variant="filled"
-              onChange={(e) => setGameCode(e.target.value)}
-            />
-            <Button type="submit" variant="contained" value="12345">
+          <form 
+            onSubmit={_joinButtonHandler}
+            onChange={(e) => setGameCode(e.target.value)}
+          >
+            <HStack >
+              <PinInput type='alphanumeric'>
+                <PinInputField placeholder="A"/>
+                <PinInputField placeholder="B"/>
+                <PinInputField placeholder="1"/>
+                <PinInputField placeholder="2"/>
+                <PinInputField placeholder="E"/>
+              </PinInput>
+            </HStack>
+            <Button 
+              variant='outline' 
+              my="4" 
+              type="submit"
+            >
               Join a game
             </Button>
           </form>
         </div>
       </section>
-      <section className="right"></section>
-
-      <Snackbar
-        severity="error"
-        open={gameCodeError}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        message="There was an error creating your game, please try again later"
-      />
+      <section className="right">
+          {/* <Snackbar
+            severity="error"
+            open={gameCodeError}
+            autoHideDuration={6000}
+            onClose={handleClose}
+            message="There was an error creating your game, please try again later"
+          /> */}
+          <Text className="credit" fontSize='xs' fontWeight='500' opacity='0.7'> Gif by <a href="https://majasbokshop.com">MAJASBOK</a></Text>
+        </section>
     </main>
   );
 }

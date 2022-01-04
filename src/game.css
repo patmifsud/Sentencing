@@ -1,12 +1,8 @@
-
-
-
-p, h1, h2, h3, h4, h5, a, label, div, aside, header, nav, section{
-   color: var(--mainCol);     
-   font-family: Public Sans, Helvetica, Arial, sans-serif;
+/* TYPOGRAPHY */
+/* p, h1, h2, h3, h4, h5, a, label, div, aside, header, nav, section, p,a,li,input,button,textarea{
+   color: white;     
    line-height:130%;
 }
-
 
 h1{
    font-size: var(--txtSize1);
@@ -59,4 +55,13 @@ li{
 
 li::marker{
 color:var(--purple2);
-}
+} */
+
+
+/* GAME */
+
+
+.game-container{
+   display: flex;
+   align-items: flex-start;
+ }

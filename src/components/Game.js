@@ -4,37 +4,38 @@
 // and managing the states of the game (phases)
 
 import React, { useState, useEffect } from "react"
-import { motion } from 'framer-motion'
 
-import gmService from "../services/gmService.js"
-import {db, startFBSnapshots} from "../services/firebase.js"
+import gmService from "../services/gameService.js"
+import playerService from "../services/playerService.js" 
+import {startFBSnapshots} from "../services/firebase.js"
 
 import TestPannel from "./ui/TestPannel"
 import PlayerDrawer from "./ui/playerDrawer/PlayerDrawer"
 import {
    Loading, Lobby, Intro, RoundStart, Write, Vote, Reveal, Scoreboard, End
-   } from "./gamePhases/gamePhaseIndex";
+} from "./gamePhases/_gamePhaseIndex.js";
 
 function Game(props) {
    const gameId = props.urlParams.toString()
 
    const [currentPhase, setCurrentPhase] = useState('Loading');
    const [players, setPlayers] = useState([]);
-   const [playerId, setPlayerId] = useState(0)
+   const [player, setPlayer] = useState(null);
+   const [playerNo, setPlayerNo] = useState(null) //-1 = spectator
    const [round, setRound] = useState(1);
    const [gameLength, setGameLength] = useState(4);
+   const [color, setColor] = useState('grey');
 
    const [story, setStory] = useState([]);
-   const [tempSentences, setTempSentences] = useState([]);
+   const [sentenceCache, setSentenceCache] = useState([]);
    const [wonSentence, setWonSentence] = useState([]);
 
    let states = {
-      players, playerId, round, story, tempSentences, wonSentence, gameId, currentPhase
+      players, player, playerNo, round, story, sentenceCache, wonSentence, gameId, currentPhase, color, setPlayerNo
    }
 
-   // 💡 if performance is an issue, could break out which states to passthrough
-   // to child components in this table also, minimising updates triggered by
-   // listened state changes
+   const ps = playerService
+
    const gamePhases = {
       'Loading': {obj: Loading, nextPhase: 'Lobby'},
       'Lobby': {obj: Lobby, nextPhase : 'Intro'},
@@ -56,17 +57,32 @@ function Game(props) {
          setPlayers,
          setStory,
          setRound,
-         setTempSentences,
+         setSentenceCache,
          gameId
       )
       // TODO?
       // https://firebase.google.com/docs/firestore/query-data/listen#detach_a_listener
    }, []);
 
+   function setPlayerOrder() {
+      if (players.length){
+         if (ps.isExistingPlayer(states)) {
+            const thisPlayerNo = ps.getLocalPlayerPosition(states)
+            setPlayerNo(thisPlayerNo);
+            setPlayer(players[playerNo]);
+         } else {
+            console.log('Could not find player in players array');
+            setPlayerNo(-1); //spectator, or lobby component will handle
+         }
+      } 
+   }
+
    function phaseHandler() {
       if (
+         playerNo > -1 &&
          players.length > 0 && 
-         players[playerId].isHost && 
+         players[playerNo] &&
+         players[playerNo].isHost && 
          gmService.checkAllPlayersReady(states, true)){
             if (gmService.checkIfEndGame(states, gameLength)) {
                gmService.dbSetGamePhase(states, "End")} 
@@ -82,7 +98,12 @@ function Game(props) {
    // If they are, and user is host, set 'currentPhase' in db to the next phase
    useEffect(() => { 
       phaseHandler();
-   }, [players]);
+      setPlayerOrder();
+   }, [players, playerNo]);
+
+   useEffect(() => {
+      setColor(ps.getPlayerColor(playerNo));
+   }, [playerNo]);
 
   return (
     <div className="game-container">
@@ -91,7 +112,6 @@ function Game(props) {
       {React.createElement(
          gamePhases[currentPhase].obj, { 
             data: states, 
-            
          },
       )}
 

@@ -1,0 +1,58 @@
+
+/* MAIN */
+
+
+.player-drawer-header{
+  padding: var(--sp1);
+  text-align: right;
+}
+
+.player-drawer{
+  display: flex;
+  flex-direction: column;
+
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+
+  border-right: 1px solid #eeeeee25;
+}
+
+.player-drawer:hover{
+  display: flex;
+  flex-direction: column;
+
+  border-right: 1px solid #eeeeee45;
+}
+
+.player-item{
+  display: flex;
+  padding: var(--sp1) var(--sp2);
+}
+
+.player-details{
+  display: flex;
+  flex-direction: column;
+  padding-left: var(--sp1);
+}
+
+.player-role{
+  opacity: 0.6;
+}
+
+.player-avatar{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: var(--sp4);
+  min-width: var(--sp4);
+  height: var(--sp4);
+  padding-bottom: 3px;   
+
+  border: 2px solid;
+  border-radius: 100px;
+
+  background: var(--grey2);
+}
+
