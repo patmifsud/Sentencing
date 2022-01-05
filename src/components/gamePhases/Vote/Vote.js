@@ -84,7 +84,9 @@ function Vote({ data }) {
                 submitting={submitting}
                 ownSentence={
                   data.player && 
-                  (data.player.playerNo === sentence.playerNo)
+                  (data.player.playerNo === sentence.playerNo) &&
+                  data.players.length > 1
+
                 }
               />
             </motion.div>

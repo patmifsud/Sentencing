@@ -20,12 +20,9 @@ function Reveal({data}) {
         gmService.setWinningSentence(data)
         .then(() => {
           setTimeout(async () => {
-            gmService.updateStoryWithWinningSentence(data)
-            .then(() => {
               gmService.dbSetAllPlayersReady(data, true);
             })
           }, 4000);
-        })
       } catch (err) {
         setSettingWonSentence(false);
         console.log(err);

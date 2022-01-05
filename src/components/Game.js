@@ -30,6 +30,8 @@ function Game(props) {
    const [sentenceCache, setSentenceCache] = useState([]);
    const [wonSentence, setWonSentence] = useState([]);
 
+   let checkingPlayerPos = false;
+
    let states = {
       players, player, playerNo, round, story, sentenceCache, wonSentence, gameId, currentPhase, color, setPlayerNo
    }
@@ -65,6 +67,7 @@ function Game(props) {
    }, []);
 
    function setPlayerOrder() {
+      checkingPlayerPos = true;
       if (players.length){
          if (ps.isExistingPlayer(states)) {
             const thisPlayerNo = ps.getLocalPlayerPosition(states)
@@ -75,6 +78,7 @@ function Game(props) {
             setPlayerNo(-1); //spectator, or lobby component will handle
          }
       } 
+      checkingPlayerPos = false;
    }
 
    function phaseHandler() {
@@ -98,7 +102,7 @@ function Game(props) {
    // If they are, and user is host, set 'currentPhase' in db to the next phase
    useEffect(() => { 
       phaseHandler();
-      setPlayerOrder();
+      if (!checkingPlayerPos) setPlayerOrder();
    }, [players, playerNo]);
 
    useEffect(() => {

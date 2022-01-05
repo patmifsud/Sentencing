@@ -21,14 +21,17 @@ function Scoreboard({data}) {
     async function manageRoundEnd(){
       setManagingRoundEnd(true);
       try {
-         playerService.addPoint(data, data.wonSentence.playerNo)
+         gmService.updateStoryWithWinningSentence(data)
          .then(() => {
-            gmService.dbIncrementRound(data)
+            playerService.addPoint(data, data.wonSentence.playerNo)
+            .then(() => {
+               gmService.dbIncrementRound(data)
                .then(() => {
                   setTimeout(async () => {
                      gmService.dbSetAllPlayersReady(data, true);
                   }, 4000);
                });
+            });
          })
       } catch (err) {
          setManagingRoundEnd(false);

@@ -27,13 +27,11 @@ function Intro(props) {
         variants={animations.phaseTitle}
       >
         <Heading className="phase-title" size="xl">
-          Meet todays's esteemed authours:
+          Meet today's esteemed authours:
         </Heading>
       </motion.div>
-
       <p>Player list will go here</p>
 
-      <Divider />
     </div>
   );
 }

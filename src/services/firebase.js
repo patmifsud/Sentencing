@@ -20,7 +20,7 @@ const db = firebaseApp.firestore();
 
 // 📅  update 'currentPhase' and 'wonSentence'
 // in game state when 'phase' changes in db
-function startGameFieldsSnapshot(setCurrentPhase, setWonSentence, setStory, gameId) {
+function startGameFieldsSnapshot(setCurrentPhase, setWonSentence, setStory, gameId, setRound) {
   console.log("Started startGameFieldsSnapshot");
   db.collection("games")
     .doc(gameId)
@@ -29,6 +29,7 @@ function startGameFieldsSnapshot(setCurrentPhase, setWonSentence, setStory, game
         setCurrentPhase(snapshot.data().currentPhase);
         setWonSentence(snapshot.data().wonSentence);
         setStory(snapshot.data().story);
+        setRound(snapshot.data().round);
       },
       (error) => {
         console.error("startGameFieldsSnapshot failed: ", error);
@@ -94,8 +95,8 @@ function startSentenceCacheSnapshot(setSentenceCache, gameId) {
           querySnapshot.docs.forEach((doc) => {
             allSentences.push(doc.data());
           });
-          setSentenceCache(allSentences);
-        }
+        } 
+        setSentenceCache(allSentences);
       },
       (error) => {
         console.error("startSentenceCacheSnapshot failed: ", error);
@@ -115,7 +116,7 @@ function startFBSnapshots(
   setTempSentences,
   gameId
 ) {
-  startGameFieldsSnapshot(setCurrentPhase, setWonSentence, setStory, gameId);
+  startGameFieldsSnapshot(setCurrentPhase, setWonSentence, setStory, gameId, setRound);
   startPlayersSnapshot(setPlayerId, gameId);
   // startStorySnapshot(setStory, gameId);
   startSentenceCacheSnapshot(setTempSentences, gameId);

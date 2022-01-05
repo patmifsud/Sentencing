@@ -56,6 +56,7 @@ const gmService = {
 
   async addToSentenceCache(s, sentence) {
     const newSentenceId = s.sentenceCache.length
+    console.log("I think sentence cache lenth is : ", s.sentenceCache.length)
     await db.collection("games")
     .doc(s.gameId)
     .collection("sentenceCache")
@@ -108,13 +109,15 @@ const gmService = {
       story : updatedStory,
     })
     .then(() => {
-      this.dbClearSentenceCache(s); 
-      return true;
+      this.dbClearSentenceCache(s)
+      .then(() => {
+        return true;
+      })
     })
     .catch((e) => {throw new Error(e)});
   },
 
-  dbClearSentenceCache: function(s) {
+  async dbClearSentenceCache(s){
     db.collection("games")
       .doc(s.gameId)
       .collection("sentenceCache")
@@ -122,7 +125,10 @@ const gmService = {
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           doc.ref.delete();
-      });
+      })
+      .then(() => {
+        return true;
+      })
     });
   },
 
@@ -133,7 +139,6 @@ const gmService = {
     .doc(s.gameId)
     .update({ story: story });
   },
-
 }
 
 export default gmService;

@@ -16,7 +16,6 @@ const playerService = {
 
   isExistingPlayer: function(gameData) {
     const localId = localStorage.getItem("localId");
-      console.log(`checking if ${localId} player in this array: `, gameData.players);
     const thisPlayer = gameData.players.findIndex(p => p.localId === localId);
     if (thisPlayer > -1) {
       return true;
