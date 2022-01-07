@@ -14,12 +14,9 @@ import "../phases.css";
 
 function Vote({ data }) {
   const [submitting, setSubmitting] = useState(false);
-  const [stage, setStage] = useState("intro");
-
   const [showConfScreen, setShowConfScreen] = useState(false);
-  const toast = useToast();
 
-  let setenceAnimationDelay = data.sentenceCache.length * 0.25;
+  const toast = useToast();
 
   async function onVote(sentenceIndex){
     setSubmitting(true);
@@ -28,7 +25,6 @@ function Vote({ data }) {
       gmService.voteForSentence(data, sentenceIndex)
       .then(() => {
         gmService.dbSetPlayerReady(data, true);
-        setShowConfScreen(true);
       })
     }
     catch(err) {
@@ -62,7 +58,7 @@ function Vote({ data }) {
 
       <motion.div variants={animations.childAnimations}>
         <Box bg="gray.700" w="100%" mb={5} px={4} py={2} fontSize="xl">
-          <text>Here's the story so far:</text>
+          <Text>Here's the story so far:</Text>
           <Story data={data}/>
         </Box>
       </motion.div>

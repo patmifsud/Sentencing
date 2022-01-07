@@ -5,12 +5,12 @@ import animations from "../../services/animations.js"
 import './phases.css';
 
 
-function RoundStart(props) {
+function RoundStart({data}) {
 
   useEffect(() => {
     setTimeout(() => {
       gmService.dbSetPlayerReady(
-        props.data, true
+        data, true
       );
     }, 4000);
   }, [])
@@ -22,7 +22,7 @@ function RoundStart(props) {
         initial="hide"
         animate="show"
       >
-        <h3>Round {props.data.round}</h3>
+        <h3>Round {data.round}</h3>
       </motion.div>
     );
   }

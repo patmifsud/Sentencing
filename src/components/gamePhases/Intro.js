@@ -31,7 +31,6 @@ function Intro(props) {
         </Heading>
       </motion.div>
       <p>Player list will go here</p>
-
     </div>
   );
 }

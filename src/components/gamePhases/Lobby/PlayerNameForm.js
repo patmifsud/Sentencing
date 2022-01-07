@@ -41,7 +41,7 @@ function PlayerNameForm(props) {
             my="4" 
             type='submit'
           >
-            Submit
+            Add Name
           </Button>
         </form>
       </motion.div>

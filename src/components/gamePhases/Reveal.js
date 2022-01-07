@@ -10,26 +10,27 @@ function Reveal({data}) {
   const [settingWonSentence, setSettingWonSentence] = useState(false);
 
   useEffect(() => {
-    if (!settingWonSentence) setWinningSentence();
+    if (data.player && data.player.isHost) {
+      if (!settingWonSentence) setWinningSentence();
+    }
   }, [data.player])
 
   async function setWinningSentence(){
-    if (data.player && data.player.isHost){
-      setSettingWonSentence(true);
-      try {
-        gmService.setWinningSentence(data)
+    setSettingWonSentence(true);
+    try {
+      gmService.setWinningSentence(data)
         .then(() => {
           setTimeout(async () => {
               gmService.dbSetAllPlayersReady(data, true);
-            })
-          }, 4000);
-      } catch (err) {
-        setSettingWonSentence(false);
-        console.log(err);
-      }
+            }, 4000);
+      });
+    }
+    catch(err) {
+      console.log(err);
+      setSettingWonSentence(false);
     }
   }
-
+  
   return (
     <motion.div 
       className="reveal phase-container" 

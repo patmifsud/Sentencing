@@ -124,12 +124,12 @@ const gmService = {
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          doc.ref.delete();
+          doc.ref.delete()
+        });
       })
       .then(() => {
         return true;
       })
-    });
   },
 
   //for testing or misc edgecases

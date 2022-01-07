@@ -1,22 +1,49 @@
 import { db } from "./firebase.js";
 import firebase from "firebase";
+import Player from "../models/player.js";
 import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
 
 const playerService = {
 
-  mintNewPlayer: function(gameCode, player, onSuccess, playerNo) {
+  mintNewPlayer: async function(gameCode, player, playerNo) {
     db.collection("games").doc(gameCode)
     .collection("players").doc(`${playerNo}`)
     .set(Object.assign({}, player))
-    .then(function () {
-      localStorage.setItem("localId", player.localId); 
-      return onSuccess();
-    })
+    .then(() => {return true});
   },
+
+  mintNewPlayers: async function(gameCode, players) {
+    players.forEach(async (player, index) => {
+      this.mintNewPlayer(gameCode, player, index)
+      .then(() => {
+        if (index === players.length - 1) {
+          return true;
+        }
+      })
+    });
+  },
+
+  // removePlayer: async function(gameCode, playerNo) {
+  //   //shouldn't use this as it causes issues with playerNos.
+  //   //since we use the no of the player in the array to index the player
+  //   //we cant remove players from the array.
+  //   db.collection("games").doc(gameCode)
+  //   .collection("players").doc(`${playerNo}`)
+  //   .delete()
+  //   .then(function () {
+  //     console.log("Player deleted: ", playerNo);
+  //   })
+  //   .catch(function (error) {
+  //     console.error("Error deleteing player: ", error);
+  //   });
+  // },
 
   isExistingPlayer: function(gameData) {
     const localId = localStorage.getItem("localId");
+    console.log('local id: ', localId);
+
     const thisPlayer = gameData.players.findIndex(p => p.localId === localId);
+    console.log('this player: ', thisPlayer);
     if (thisPlayer > -1) {
       return true;
     } return  false
@@ -114,8 +141,56 @@ const playerService = {
     .then(function(){ return true })
     .catch(function(){ return false;}
     )
-  }
+  },
 
+  howManyPlayersAreBots: function(gameData){
+    if (gameData.players) {
+      const players = gameData.players;
+      const botCount = players.filter(player => player.isBot).length;
+      console.log(botCount)
+      return botCount;
+    }
+  },
+
+  addOrRemoveBots: async function(gameData, from, to){
+    const botDiff = to - from;
+    if (botDiff > 0) {
+      for (let i = 0; i < botDiff; i++) {
+        this.createBotPlayer(gameData);
+      }
+    } else if (botDiff < 0) {
+      console.error("removing bots isn't supported")
+      // for (let i = 0; i > botDiff; i--) {
+      //   this.removeBotPlayer(gameData);
+      // }
+    }
+  },
+
+  createBotPlayer: function(gameData){
+    const playerNo = gameData.players.length;
+    const localId = this.makeRandomId();
+    const player = new Player(`Bot ${playerNo}`, playerNo, false, false, localId, true, 0);
+    console.log('gameData.players.length', gameData.players.length);
+    this.mintNewPlayer(
+      gameData.gameId, player, playerNo
+    )
+  },
+
+  // since we're using player position, removing bots isn't possible atm
+  // removeBotPlayer: async function(gameData){
+  //   const player = gameData.players.find(p => p.isBot);
+
+  //   if (player) {
+  //     db.collection("games")
+  //     .doc(gameData.gameId)
+  //     .collection("players")
+  //     .doc(`${player.playerNo}`)
+  //     .delete()
+  //     .then(function(){ return true })
+  //     .catch(function(){ return false;}
+  //     )
+  //   }
+  // },
 }
 
 export default playerService;

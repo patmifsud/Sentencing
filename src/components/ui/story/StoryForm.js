@@ -12,7 +12,7 @@ function StoryForm(props) {
       onSubmit={props.onSubmit} 
       style={{opacity: props.submitting ? 0.4 : 1}}
     >
-      <div class="left">
+      <div className="left">
         <Text mb='2px'>What happens next?</Text>
         <Textarea 
           variant='flushed'
